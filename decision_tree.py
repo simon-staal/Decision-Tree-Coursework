@@ -23,7 +23,9 @@ def main():
         data_test = data_10fold[i]
         (root, depth) = build_decision_tree(data_train)
         plot_tree(root) # This will changed later with wrapper function
-        confusion = confusion_matrix(root)
+        y_gold = data_test[:,-1]
+        y_predict = np.apply_along_axis(predict, 1, data_test[:,:-1]) # Using apply_along_axis is untested
+        confusion = confusion_matrix(y_gold, y_predict)
         
 
 
