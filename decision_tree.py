@@ -104,7 +104,7 @@ def build_decision_tree(data, depth=0):
         # split_feature refers to the column of the feature we split our data on, split_val refers to the value at which we seperate out entries on the split_feature
         split_feature, split_val = find_best_split(data)
         #, potential_splits)
-        l_dataset, r_dataset = split_data(split_feature, split_val)
+        l_dataset, r_dataset = split_data(data, split_feature, split_val)
         l_node, l_depth = build_decision_tree(l_dataset, depth+1)
         r_node, r_depth = build_decision_tree(r_dataset, depth+1)
         node = {
