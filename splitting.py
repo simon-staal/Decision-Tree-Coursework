@@ -21,8 +21,8 @@ def find_splits(dataset):
     return label_boundaries
 
 def split_data(dataset, split_feature, split_value):
-    l_dataset = dataset[ dataset[:, split_feature] <= split_value ]
-    r_dataset = dataset[ dataset[:, split_feature] > split_value ]
+    l_dataset = dataset[ dataset[:, split_feature] < split_value ]
+    r_dataset = dataset[ dataset[:, split_feature] >= split_value ]
     #ideally, no datapoint should have a feature value equal to the split value, 
     #bar in the edge cases where a small number of datapoints of different classes have the same values 
     #or the optimal split is done on a feature where the border points have the same value
