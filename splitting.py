@@ -3,10 +3,11 @@ import entropy as e
 
 def find_splits(dataset):
     label_boundaries = {}
-
+    #print(dataset)
     #sort dataset by each feature to find class borders in each sorted version
     for column in range(dataset.shape[1]-1):
         data_sorted_for_feature = dataset[:, [column, dataset.shape[1]-1]][dataset[:, column].argsort()]
+        #print(data_sorted_for_feature)
 
         #had to add this to fix an issue, problems may arise from features that have an empty vector
         label_boundaries[column] = []
