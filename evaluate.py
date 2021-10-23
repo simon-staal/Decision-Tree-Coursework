@@ -1,7 +1,7 @@
 import numpy as np
 
 # Predicts label for single entry
-def predict(root, attributes):
+def predict_single(root, attributes):
     if isinstance(root, str):
         return root
     else:
@@ -9,6 +9,10 @@ def predict(root, attributes):
             return predict(root['left'], attributes)
         else:
             return predict(root["right"], attributes)
+
+# Predicts labels for data-set
+def predict(root, data_test):
+    return np.apply_along_axis(predict_single, 1, data_test)
 
 # Return confusion matrix based on gold standard vs predictions
 def gen_confusion_matrix(y_gold, y_predict):
