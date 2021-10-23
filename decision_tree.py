@@ -1,11 +1,11 @@
 import numpy as np
 from numpy.random import default_rng
 
-from data_process import read_dataset, split_dataset
-from purity import is_pure, classify
-from splitting import find_splits, find_best_split, split_data
-from tree_plotting import plot_tree
-import evaluate as eval
+from helper_functions.data_process import read_dataset, split_dataset
+from helper_functions.purity import is_pure, classify
+from helper_functions.splitting import find_splits, find_best_split, split_data
+from helper_functions.tree_plotting import plot_tree
+import helper_functions.evaluate as eval
 
 
 def main():
