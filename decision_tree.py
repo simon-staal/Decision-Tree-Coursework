@@ -6,7 +6,7 @@ from helper_functions.purity import is_pure, classify
 from helper_functions.splitting import find_splits, find_best_split, split_data
 from helper_functions.tree_plotting import plot_tree
 import helper_functions.evaluate as eval
-from ml_autumn2021.cw1.helper_functions.pruning import prune_tree
+from helper_functions.pruning import prune_tree
 
 
 def main():

@@ -1,7 +1,7 @@
 from numbers import Number
 
-from purity import classify
-from splitting import split_data 
+from helper_functions.purity import classify
+from helper_functions.splitting import split_data 
 
 def prune_tree(root, current_node, val_dataset, train_dataset):
 

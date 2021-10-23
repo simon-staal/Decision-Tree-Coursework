@@ -1,5 +1,5 @@
 import numpy as np
-import entropy as e
+from helper_functions.entropy import calculate_total_entropy
 
 def find_splits(dataset):
     label_boundaries = {}
@@ -47,7 +47,7 @@ def find_best_split(dataset):
         if( potential_split[1] != []):
             for boundary in potential_split[1]:
                 l_dataset, r_dataset = split_data(dataset, potential_split[0], boundary)
-                entropy_remainder = e.calculate_total_entropy(l_dataset, r_dataset)
+                entropy_remainder = calculate_total_entropy(l_dataset, r_dataset)
                 if entropy_remainder < min_remainder:
                     min_remainder = entropy_remainder
                     optimal_split = potential_split
