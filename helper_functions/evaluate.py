@@ -80,3 +80,17 @@ def f1_score(confusion_matrix):
       macro_f = f.mean()
     
     return (f, macro_f)
+
+# Prints all the metrics we are interested in for a given confusion matrix
+def print_metrics(confusion_matrix):
+    print(confusion_matrix)
+    print("Accuracy:", eval.accuracy(confusion_matrix))
+    (p, macro_p) = eval.precision(confusion_matrix)
+    print("Precision per-class:", p)
+    print("Macro-averged precision", macro_p)
+    (r, macro_r) = eval.recall(confusion_matrix)
+    print("Recall per-class:", r)
+    print("Macro-averaged recall:", macro_r)
+    (f, f_macro) = eval.f1_score(confusion_matrix)
+    print("F1 score per-class", f)
+    print("Macro-averaged F1 score", f_macro)
