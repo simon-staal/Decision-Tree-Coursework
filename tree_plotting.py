@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot_tree(root, depth, x, y, yspacing):
+def plot_tree(root, depth=0, x=0, y=50, yspacing=5):
     if isinstance(root, str):
         #draw leaf node:
         plt.text(x, y, "leaf: " + root, size='smaller', rotation=0,
