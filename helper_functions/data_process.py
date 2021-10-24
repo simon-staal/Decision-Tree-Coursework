@@ -13,11 +13,8 @@ def read_dataset(filepath):
     data = np.array(data)
     return data
 
-# Return np arrays x_rand, y_rand which are randomly shuffled data-sets split into n subsets
+# Return np array with randomly shuffled data-sets split into n subsets
 def split_dataset(data, splits, random_generator=default_rng()):
-
     shuffled_indices = random_generator.permutation(len(data))
-    
     data_rand = np.asarray(np.array_split(data[shuffled_indices], splits))
-
     return data_rand

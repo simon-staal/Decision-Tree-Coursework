@@ -1,9 +1,8 @@
 import numpy as np
 from numpy.random import default_rng
 
-#Calculate the entropy of a specific dataset
+# Calculate the entropy of a specific dataset
 def calculate_entropy(data):
-
 	labels = data[:,-1]
 	_,freq = np.unique(labels, return_counts=True)
 
@@ -12,9 +11,8 @@ def calculate_entropy(data):
 
 	return entropy
 
-#Calculate the entropy of the system after having been split at any given point
+# Calculate the entropy of the system after having been split at any given point
 def calculate_total_entropy(l_data, r_data):
-
 	l_entropy = calculate_entropy(l_data)
 	r_entropy = calculate_entropy(r_data)
 
