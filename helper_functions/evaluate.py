@@ -1,14 +1,14 @@
 import numpy as np
 
 # Predicts label for single entry
-def predict_single(root, attributes):
+def predict_single(attributes, root):
     if isinstance(root, str):
         return root
     else:
         if attributes[root["attribute"]] < root["value"]:
-            return predict(root['left'], attributes)
+            return predict_single(attributes, root['left'])
         else:
-            return predict(root["right"], attributes)
+            return predict_single(attributes, root["right"])
 
 # Predicts labels for data-set
 def predict(root, data_test):
