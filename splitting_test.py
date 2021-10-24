@@ -6,6 +6,7 @@ print(testData.shape)
 
 print("test 1 start")
 print( sf.find_splits(testData) )
+print(type(sf.find_splits(testData).items()))
 print("test 1 end")
 
 x, y = sf.split_data(testData, 0, 5)
