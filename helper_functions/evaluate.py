@@ -18,9 +18,11 @@ def predict(root, data_test):
 def gen_confusion_matrix(y_gold, y_predict):
     class_labels = np.unique(np.concatenate((y_gold, y_predict)))
     confusion_matrix = np.zeros((len(class_labels), len(class_labels)), dtype=np.int)
+    print(confusion_matrix.shape)
     assert (len(y_gold) == len(y_predict)),"Mismatched prediction / gold standard results"
     for i in range(len(y_gold)):
-      confusion_matrix[y_gold[i]][y_predict[i]] += 1
+        print(y_gold[i], y_predict[i])
+        confusion_matrix[y_gold[i]-1][y_predict[i]-1] += 1
     
     return confusion_matrix
 

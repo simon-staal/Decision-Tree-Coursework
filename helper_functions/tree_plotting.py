@@ -36,7 +36,7 @@ def plot_tree_helper(root, depth=0, x=0, y=50, yspacing=5):
 
 
 def plot_tree(root, maxdepth, filename) :
-    figure(figsize=(0.5*2**maxdepth, maxdepth), dpi=80)
+    figure(figsize=(min(2**maxdepth, 2**9), maxdepth), dpi=80)
     plot_tree_helper(root)
     #plt.xlim([-3,3])
     plt.axis('off')
@@ -85,4 +85,4 @@ from matplotlib.pyplot import figure
 #plt.xlim([-3,3])
 plt.axis('off')
 plt.savefig("matplotlib.png")'''
-plot_tree(root, 4, "matplotlib.png")
+'''plot_tree(root, 4, "matplotlib.png")'''
