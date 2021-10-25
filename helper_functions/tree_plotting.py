@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def plot_tree_helper(root, depth=0, x=0, y=50, yspacing=5):
-    if isinstance(root, str):
+    if isinstance(root, str) or isinstance(root, int) or isinstance(root, float): #come back later probs string
         #draw leaf node:
-        plt.text(x, y, "leaf: " + root, size='smaller', rotation=0,
+        plt.text(x, y, "leaf: " + str(root), size='smaller', rotation=0,
          ha="center", va="center",
          bbox=dict(boxstyle="round",
                    ec=(1., 0.5, 0.5),

@@ -2,10 +2,10 @@ import numpy as np
 
 # Predicts label for single entry
 def predict_single(attributes, root):
-    if isinstance(root, str):
+    if isinstance(root, str) or isinstance(root,int) or isinstance(root, float):
         return root
     else:
-        if attributes[root["attribute"]] < root["value"]:
+        if attributes[int(root["attribute"])] < root["value"]:
             return predict_single(attributes, root['left'])
         else:
             return predict_single(attributes, root["right"])
