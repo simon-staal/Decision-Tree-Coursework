@@ -20,7 +20,7 @@ def main():
     print(data_10fold.shape)
     # Runs 10-fold cross validation
     for i in range(10):
-        data_train = data_10fold[np.arange(len(data_10fold))!=i]
+        data_train = np.concatenate(data_10fold[np.arange(len(data_10fold))!=i])
         data_test = data_10fold[i]
         print(data_train.shape)
         (root, depth) = build_decision_tree(data_train)
@@ -39,9 +39,10 @@ def build_decision_tree(data, depth=0):
         return (classify(data), depth)
 
     else:
-        potential_splits = find_splits(data)
+        #potential_splits = find_splits(data)
         # split_feature refers to the column of the feature we split our data on, split_val refers to the value at which we seperate out entries on the split_feature
-        split_feature, split_val = find_best_split(data, potential_splits)
+        split_feature, split_val = find_best_split(data)
+        #, potential_splits)
         l_dataset, r_dataset = split_data(split_feature, split_val)
         l_node, l_depth = build_decision_tree(l_dataset, depth+1)
         r_node, r_depth = build_decision_tree(r_dataset, depth+1)
