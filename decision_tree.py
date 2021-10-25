@@ -5,6 +5,7 @@ from data_process import read_dataset, split_dataset
 from purity import is_pure, classify
 from splitting import find_splits, find_best_split, split_data
 from tree_plotting import plot_tree
+import evaluate as eval
 
 
 def main():
@@ -14,12 +15,11 @@ def main():
     print(data.shape)
     data_10fold = split_dataset(data, 10, rg) # Split dataset into 10 random equally-sized subsets
     total_confusion = np.array((4, 4))
-    total_accuracy = 0
-    total_metrics = np.array((4, 3))
 
     print(data_10fold.shape)
     # Runs 10-fold cross validation
-    for i in range(10):
+    k = 10
+    for i in range(k):
         data_train = np.concatenate(data_10fold[np.arange(len(data_10fold))!=i])
         data_test = data_10fold[i]
         print(data_train.shape)
@@ -27,8 +27,12 @@ def main():
         plot_tree(root, depth, "figures/fold" + str(i) + "_c.png") # This will changed later with wrapper function
         #confusion = confusion_matrix(root)
         y_gold = data_test[:,-1]
-        y_predict = predict(data_test[:, :-1])
-        confusion = confusion_matrix(y_gold, y_predict)
+        y_predict = eval.predict(data_test[:, :-1])
+        confusion_matrix = eval.gen_confusion_matrix(y_gold, y_predict)
+        total_confusion += confusion_matrix
+        
+        
+
     
 
 
