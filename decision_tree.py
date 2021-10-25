@@ -27,7 +27,7 @@ def main():
         plot_tree(root, depth, "figures/fold" + str(i) + "_c.png") # This will changed later with wrapper function
         #confusion = confusion_matrix(root)
         y_gold = data_test[:,-1]
-        y_predict = np.apply_along_axis(predict, 1, data_test[:,:-1]) # Using apply_along_axis is untested
+        y_predict = predict(data_test[:, :-1])
         confusion = confusion_matrix(y_gold, y_predict)
     
 
