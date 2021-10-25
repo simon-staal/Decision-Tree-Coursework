@@ -7,10 +7,10 @@ import matplotlib as mpl
 def calculate_entropy( data ):
 
 	labels = data[:,-1]
-	_,freq = np.unique(labels, return_freq=True)
+	_,freq = np.unique(labels, return_counts=True)
 
 	prob = freq/freq.sum()
-	entropy = sum(prob * -nplog2(prob))
+	entropy = sum(prob * -np.log2(prob))
 
 	return entropy
 
@@ -20,7 +20,7 @@ def calculate_total_entropy ( l_data, r_data):
 	l_entropy = calculate_entropy(l_data)
 	r_entropy = calculate_entropy(r_data)
 
-	remainder = (l_data.size()*l_entropy)/(l_data.size()+r_data.size()) + (r_data.size()*r_entropy)/(l_data.size()+r_data.size())
+	remainder = (l_data.size*l_entropy)/(l_data.size+r_data.size) + (r_data.size*r_entropy)/(l_data.size+r_data.size)
 
 	return remainder
 
