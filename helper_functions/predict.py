@@ -1,14 +1,19 @@
 import numpy as np
 
 
-def predict(root, attributes):
+# Predicts label for single entry
+def predict_single(attributes, root):
     if isinstance(root, str):
         return root
     else:
         if attributes[root["attribute"]] < root["value"]:
-            return predict(root['left'], attributes)
+            return predict_single(attributes, root['left'])
         else:
-            return predict(root["right"], attributes)
+            return predict_single(attributes, root["right"])
+
+# Predicts labels for data-set
+def predict(root, data_test):
+    return np.apply_along_axis(predict_single, 1, data_test, root=root)
     
 
 
@@ -46,9 +51,11 @@ root = {
     "right": child2,
 }
 
-attributes = [-50,1,2,3,4]
-attributes2 = [-40,1,2,3,4]
-attributes3 = [-60,1,2,-60,4]
-attributes4 = [-60,1,2,-50,-60]
-attributes5 = [-60,1,2,-50,-50]
-print(predict(root, attributes5))
+test_data = [[-50,1,2,3,4],
+                [-40,1,2,3,4],
+                [-60,1,2,-60,4],
+                [-60,1,2,-50,-60],
+                [-60,1,2,-50,-50]]
+test_data = np.asarray(test_data)
+
+print(predict(root, test_data))

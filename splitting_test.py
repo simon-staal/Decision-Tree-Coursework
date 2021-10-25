@@ -1,4 +1,4 @@
-import splitting as sf
+import helper_functions.splitting as sf
 import numpy as np
 
 testData = np.array([[1, 2, 0], [2, 2, 0], [10, 11, 1], [12, 12, 1]])
