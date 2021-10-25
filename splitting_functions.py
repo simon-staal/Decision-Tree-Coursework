@@ -36,14 +36,14 @@ def find_best_split(dataset):
 
     label_boundaries = find_splits(dataset)
 
-    max_remainder = 0
-    optimal_split = {0, 0}
+    min_remainder = np.inf
+    optimal_split = (0, 0)
 
     #might be "simpler" to replace dict by list of tuples, bigger data structure but it seems odd to use a dictionary if only items are used
     for potential_split in label_boundaries.items():
         l_dataset, r_dataset = split_data(dataset, potential_split[0], potential_split[1])
         entropy_remainder = e.calculate_total_entropy(l_dataset, r_dataset)
-        if entropy_remainder > max_remainder:
+        if entropy_remainder < min_remainder:
             max_remainder = entropy_remainder
             optimal_split = potential_split
 
