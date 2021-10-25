@@ -22,6 +22,7 @@ def find_splits(dataset):
     return label_boundaries
 
 def split_data(dataset, split_feature, split_value):
+    #print(split_value)
     l_dataset = dataset[ dataset[:, split_feature] < split_value ]
     r_dataset = dataset[ dataset[:, split_feature] >= split_value ]
     #ideally, no datapoint should have a feature value equal to the split value, 
@@ -36,7 +37,6 @@ def split_data(dataset, split_feature, split_value):
 def find_best_split(dataset):
 
     label_boundaries = find_splits(dataset)
-
     min_remainder = np.inf
     #feature column, feature split value
     optimal_split = (0, 0)
@@ -51,5 +51,4 @@ def find_best_split(dataset):
                 if entropy_remainder < min_remainder:
                     min_remainder = entropy_remainder
                     optimal_split = potential_split
-
     return optimal_split[0], optimal_split[1]
