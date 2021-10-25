@@ -43,11 +43,13 @@ def find_best_split(dataset):
 
     #might be "simpler" to replace dict by list of tuples, bigger data structure but it seems odd to use a dictionary if only items are used
     for potential_split in label_boundaries.items():
-        for boundary in potential_split[1]:
-            l_dataset, r_dataset = split_data(dataset, potential_split[0], boundary)
-            entropy_remainder = e.calculate_total_entropy(l_dataset, r_dataset)
-            if entropy_remainder < min_remainder:
-                min_remainder = entropy_remainder
-                optimal_split = potential_split
+        #would be nice to avoid this, not clear if this is the fix tbh tho
+        if( potential_split[1] != []):
+            for boundary in potential_split[1]:
+                l_dataset, r_dataset = split_data(dataset, potential_split[0], boundary)
+                entropy_remainder = e.calculate_total_entropy(l_dataset, r_dataset)
+                if entropy_remainder < min_remainder:
+                    min_remainder = entropy_remainder
+                    optimal_split = potential_split
 
     return optimal_split[0], optimal_split[1]
