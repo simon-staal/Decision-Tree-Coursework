@@ -11,20 +11,22 @@ def main():
     data = read_dataset("wifi_db/clean_dataset.txt")
     seed = 3
     rg = default_rng(seed)
+    print(data.shape)
     data_10fold = split_dataset(data, 10, rg) # Split dataset into 10 random equally-sized subsets
-    total_confusion = np.array(4, 4)
+    total_confusion = np.array((4, 4))
     total_accuracy = 0
-    total_metrics = np.array(4, 3)
+    total_metrics = np.array((4, 3))
 
-
+    print(data_10fold.shape)
     # Runs 10-fold cross validation
     for i in range(10):
         data_train = data_10fold[np.arange(len(data_10fold))!=i]
         data_test = data_10fold[i]
+        print(data_train.shape)
         (root, depth) = build_decision_tree(data_train)
-        plot_tree(root) # This will changed later with wrapper function
-        confusion = confusion_matrix(root)
-        
+        plot_tree(root, depth, "figures/fold" + str(i) + "_c.png") # This will changed later with wrapper function
+        #confusion = confusion_matrix(root)
+    
 
 
 

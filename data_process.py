@@ -7,7 +7,7 @@ def read_dataset(filepath):
     data = []
     for line in open(filepath):
         if line.strip() != "": # handle empty rows in file
-            row = line.strip().split(",")
+            row = line.strip().split("\t")
             data.append(list(map(float, row[:]))) 
 
     data = np.array(data)
