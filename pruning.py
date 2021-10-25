@@ -5,7 +5,7 @@ from splitting import split_data
 
 def prune_tree(root, current_node, val_dataset, train_dataset):
 
-    ref_accuracy = accuracy(root, val_dataset)
+    ref_accuracy = accuracy(get_confusion_matrix(root, val_dataset))
 
     #check if the root only has leaves, for safety
     if( isinstance(current_node["left"], Number) and isinstance(current_node["right"], Number) ):
