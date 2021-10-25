@@ -14,7 +14,7 @@ print(is_pure(array))'''
 
 def classify(data): #returns the most frequently appearing labels from data
     labels, counts = np.unique(data[:,-1], return_counts = True)
-    return labels[np.argmax(counts)]
+    return str(labels[np.argmax(counts)])
 
 '''array = np.ones((10,10))
 array[3][9] =2
