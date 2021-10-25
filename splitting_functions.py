@@ -20,9 +20,9 @@ def find_splits(dataset):
 
     return label_boundaries
 
-def split_data(dataset, split_feature_index, split_value):
-    l_dataset = dataset[ dataset[:, split_feature_index] <= split_value ]
-    r_dataset = dataset[ dataset[:, split_feature_index] > split_value ]
+def split_data(dataset, split_feature, split_value):
+    l_dataset = dataset[ dataset[:, split_feature] <= split_value ]
+    r_dataset = dataset[ dataset[:, split_feature] > split_value ]
     #ideally, no datapoint should have a feature value equal to the split value, 
     #bar in the edge cases where a small number of datapoints of different classes have the same values 
     #or the optimal split is done on a feature where the border points have the same value
@@ -37,6 +37,7 @@ def find_best_split(dataset):
     label_boundaries = find_splits(dataset)
 
     min_remainder = np.inf
+    #feature column, feature split value
     optimal_split = (0, 0)
 
     #might be "simpler" to replace dict by list of tuples, bigger data structure but it seems odd to use a dictionary if only items are used
@@ -44,7 +45,7 @@ def find_best_split(dataset):
         l_dataset, r_dataset = split_data(dataset, potential_split[0], potential_split[1])
         entropy_remainder = e.calculate_total_entropy(l_dataset, r_dataset)
         if entropy_remainder < min_remainder:
-            max_remainder = entropy_remainder
+            min_remainder = entropy_remainder
             optimal_split = potential_split
 
-    return split_data(dataset, optimal_split[0], optimal_split[1])
+    return optimal_split[0], optimal_split[1]
