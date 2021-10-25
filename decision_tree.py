@@ -48,6 +48,8 @@ def train_test_k_folds(data, rg, k=10, file_suffix="c"):
     depths = np.zeros((k, ))
 
     # Runs 10-fold cross validation
+    print("data: ")
+    print(data.shape)
     for i in range(k):
         data_train = np.concatenate(data_10fold[np.arange(len(data_10fold))!=i])
         data_test = data_10fold[i]
@@ -55,9 +57,6 @@ def train_test_k_folds(data, rg, k=10, file_suffix="c"):
         plot_tree(root, depth, "figures/fold" + str(i) + "_" + file_suffix + ".png")
         y_gold = data_test[:,-1]
         y_predict = eval.predict(root, data_test[:, :-1])
-        if i == 0:
-            print(y_gold.shape)
-            print(y_predict.shape)
         confusion_matrix = eval.gen_confusion_matrix(y_gold, y_predict)
         total_confusion += confusion_matrix
         depths[k] = depth
@@ -99,6 +98,7 @@ def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
 
 
 def build_decision_tree(data, depth=0):
+    #print(data.shape)
     if is_pure(data):
         return (classify(data), depth)
 
