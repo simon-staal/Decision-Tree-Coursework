@@ -8,4 +8,4 @@ def is_pure(data):
 # Returns the most frequently appearing labels from data
 def classify(data):
     labels, counts = np.unique(data[:,-1], return_counts = True)
-    return str(labels[np.argmax(counts)])
+    return labels[np.argmax(counts)]
