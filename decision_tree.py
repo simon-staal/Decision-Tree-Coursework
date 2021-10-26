@@ -1,4 +1,5 @@
 import numpy as np
+import os
 from numpy.random import default_rng
 
 from helper_functions.data_process import read_dataset, split_dataset
@@ -47,6 +48,12 @@ def train_test_k_folds(data, rg, k=10, file_suffix="c"):
     total_confusion = np.zeros((4, 4))
     depths = np.zeros((k, ))
 
+    # Folder used for figure storing
+    out_dir = ("figures")
+    # If folder doesn't exist, then create it.
+    if not os.path.isdir(out_dir):
+        os.makedirs(out_dir)
+
     # Runs 10-fold cross validation
     for i in range(k):
         data_train = np.concatenate(data_10fold[np.arange(len(data_10fold))!=i])
@@ -67,6 +74,12 @@ def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
     data_10fold = split_dataset(data, k, rg) # Split dataset into 10 random equally-sized subsets
     total_confusion = np.zeros((4, 4))
     depths = np.zeros((k, ))
+
+    # Folder used for figure storing
+    out_dir = ("figures")
+    # If folder doesn't exist, then create it.
+    if not os.path.isdir(out_dir):
+        os.makedirs(out_dir)
 
     # Runs 10-fold cross validation
     for i in range(k):
