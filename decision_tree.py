@@ -13,7 +13,7 @@ def main():
     data = read_dataset("wifi_db/clean_dataset.txt")
     seed = 3
     rg = default_rng(seed)
-
+    
     (total_confusion, avg_depth) = train_test_k_folds(data, rg, 10, "c")
     print("Clean Dataset un-pruned metrics: ")
     eval.print_metrics(total_confusion)
@@ -70,13 +70,13 @@ def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
 
     # Runs 10-fold cross validation
     for i in range(k):
-        data_train = data_10fold[np.arange(len(data_10fold))!=i]
+        data_train_outer = data_10fold[np.arange(len(data_10fold))!=i]
         data_test = data_10fold[i]
         # Nested folds for pruning
         pruned_accuracies = [] # Tracks the accuracy of a particular pruned tree relative to its validation set
         for j in range(k-1):
-            data_val = data_train[j] 
-            data_train = np.concatenate(data_train[np.arange(len(data_train))!=i])
+            data_val = data_train_outer[j] 
+            data_train = np.concatenate(data_train_outer[np.arange(len(data_train_outer))!=i])
             (root, _) = build_decision_tree(data_train)
             #I, David, have added a depth argument to prune_tree
             (root_pruned, depth) = prune_tree(root, root, data_val, data_train, 0)
@@ -84,12 +84,12 @@ def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
             #added root_pruned
             y_predict = eval.predict(root_pruned, data_test[:, :-1])
             acc = eval.accuracy(eval.gen_confusion_matrix(y_gold, y_predict))
-            pruned_accuracies.append(acc, root_pruned, depth)
+            pruned_accuracies.append((acc, root_pruned, depth))
 
         (_, root, depth) = max(pruned_accuracies, key=lambda x:x[0])
-        plot_tree(root, depth, "figures/nested_fold" + str(i) + "_" + file_suffix + ".png")
+        plot_tree(root, depth, "figures/pruned_fold" + str(i) + "_" + file_suffix + ".png")
         y_gold = data_test[:,-1]
-        y_predict = eval.predict(data_test[:, :-1])
+        y_predict = eval.predict(root, data_test[:, :-1])
         confusion_matrix = eval.gen_confusion_matrix(y_gold, y_predict)
         total_confusion += confusion_matrix
         depths[i] = depth
