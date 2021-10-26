@@ -14,7 +14,7 @@ def find_splits(dataset):
 
         for row in range(data_sorted_for_feature.shape[0]-1):
 
-            if data_sorted_for_feature[row, 1] != data_sorted_for_feature[row+1, 1]:
+            if data_sorted_for_feature[row, 1] != data_sorted_for_feature[row+1, 1] and data_sorted_for_feature[row, 0] != data_sorted_for_feature[row+1, 0]:
 
                 split_value = (data_sorted_for_feature[row, 0] + data_sorted_for_feature[row+1, 0])/2
                 label_boundaries[column].append(split_value)        

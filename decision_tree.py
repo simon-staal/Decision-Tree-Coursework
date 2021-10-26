@@ -108,6 +108,13 @@ def build_decision_tree(data, depth=0):
         split_feature, split_val = find_best_split(data)
         #, potential_splits)
         l_dataset, r_dataset = split_data(data, split_feature, split_val)
+        if len(l_dataset) == 0 or len(r_dataset) == 0:
+            print("Potential splits:")
+            print(find_splits(data))
+            print("Split feature",split_feature)
+            print("Split value",split_val)
+            print(l_dataset)
+            print(r_dataset)
         l_node, l_depth = build_decision_tree(l_dataset, depth+1)
         r_node, r_depth = build_decision_tree(r_dataset, depth+1)
         node = {

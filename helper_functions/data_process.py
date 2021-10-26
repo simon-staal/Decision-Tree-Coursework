@@ -7,9 +7,9 @@ def read_dataset(filepath):
     data = []
     for line in open(filepath):
         if line.strip() != "": # handle empty rows in file
-            row = line.strip().split("\t")
-            entry = list(map(float, row[:-1]))
-            entry.append(int(row[-1]))
+            row = line.strip().split()
+            assert (len(row) == 8 ), "Bad"
+            entry = list(map(float, row[:]))
             data.append(entry)
 
     data = np.array(data)
