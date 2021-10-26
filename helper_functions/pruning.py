@@ -1,11 +1,13 @@
 from numbers import Number
 
 from helper_functions.purity import classify
-from helper_functions.splitting import split_data 
+from helper_functions.splitting import split_data
+from helper_functions.evaluate import predict, accuracy, gen_confusion_matrix
 
 def prune_tree(root, current_node, val_dataset, train_dataset):
-
-    ref_accuracy = accuracy(get_confusion_matrix(root, val_dataset))
+    y_gold = val_dataset[:, -1] # Extract correct labels for validation data
+    y_predict = predict(root, val_dataset[:, :-1]) # Slicing is unnecessary here but just to show we don't use the correct labels in our prediction (we don't look at them in our predict function anyways)
+    ref_accuracy = accuracy(gen_confusion_matrix(y_gold, y_predict))
 
     #check if the root only has leaves, for safety
     if( isinstance(current_node["left"], Number) and isinstance(current_node["right"], Number) ):
