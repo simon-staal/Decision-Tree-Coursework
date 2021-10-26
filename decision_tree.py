@@ -48,8 +48,6 @@ def train_test_k_folds(data, rg, k=10, file_suffix="c"):
     depths = np.zeros((k, ))
 
     # Runs 10-fold cross validation
-    print("data: ")
-    print(data.shape)
     for i in range(k):
         data_train = np.concatenate(data_10fold[np.arange(len(data_10fold))!=i])
         data_test = data_10fold[i]
