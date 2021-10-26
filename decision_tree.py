@@ -57,7 +57,7 @@ def train_test_k_folds(data, rg, k=10, file_suffix="c"):
         y_predict = eval.predict(root, data_test[:, :-1])
         confusion_matrix = eval.gen_confusion_matrix(y_gold, y_predict)
         total_confusion += confusion_matrix
-        depths[k] = depth
+        depths[i] = depth
     
     return (total_confusion, depths.mean())
 
