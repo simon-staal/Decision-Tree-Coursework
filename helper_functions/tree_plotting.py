@@ -42,6 +42,7 @@ def plot_tree(root, maxdepth, filename) :
     plt.axis('off')
     
     plt.savefig(filename)
+    plt.close()
     return
 
 child6 = {
