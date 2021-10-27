@@ -48,8 +48,6 @@ def train_test_k_folds(data, rg, k=10, file_suffix="c"):
     depths = np.zeros((k, ))
 
     # Runs 10-fold cross validation
-    print("data: ")
-    print(data.shape)
     for i in range(k):
         data_train = np.concatenate(data_10fold[np.arange(len(data_10fold))!=i])
         data_test = data_10fold[i]
@@ -59,7 +57,7 @@ def train_test_k_folds(data, rg, k=10, file_suffix="c"):
         y_predict = eval.predict(root, data_test[:, :-1])
         confusion_matrix = eval.gen_confusion_matrix(y_gold, y_predict)
         total_confusion += confusion_matrix
-        depths[k] = depth
+        depths[i] = depth
     
     return (total_confusion, depths.mean())
 
@@ -80,9 +78,11 @@ def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
             data_val = data_train[j] 
             data_train = np.concatenate(data_train[np.arange(len(data_train))!=i])
             (root, _) = build_decision_tree(data_train)
-            (root_pruned, depth) = prune_tree(root, root, data_val, data_train)
+            #I, David, have added a depth argument to prune_tree
+            (root_pruned, depth) = prune_tree(root, root, data_val, data_train, 0)
             y_gold = data_val[:,-1]
-            y_predict = eval.predict(data_test[:, :-1])
+            #added root_pruned
+            y_predict = eval.predict(root_pruned, data_test[:, :-1])
             acc = eval.accuracy(eval.gen_confusion_matrix(y_gold, y_predict))
             pruned_accuracies.append(acc, root_pruned, depth)
 

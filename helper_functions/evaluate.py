@@ -18,11 +18,10 @@ def predict(root, data_test):
 def gen_confusion_matrix(y_gold, y_predict):
     class_labels = np.unique(np.concatenate((y_gold, y_predict)))
     confusion_matrix = np.zeros((len(class_labels), len(class_labels)), dtype=np.int)
-    print(confusion_matrix.shape)
+
     assert (len(y_gold) == len(y_predict)),"Mismatched prediction / gold standard results"
     for i in range(len(y_gold)):
-        print(y_gold[i], y_predict[i])
-        confusion_matrix[y_gold[i]-1][y_predict[i]-1] += 1
+        confusion_matrix[int(y_gold[i])-1][int(y_predict[i])-1] += 1
     
     return confusion_matrix
 
@@ -86,16 +85,16 @@ def f1_score(confusion_matrix):
 def print_metrics(confusion_matrix):
     print(confusion_matrix)
 
-    print("Accuracy:", eval.accuracy(confusion_matrix))
+    print("Accuracy:", accuracy(confusion_matrix))
 
-    (p, macro_p) = eval.precision(confusion_matrix)
+    (p, macro_p) = precision(confusion_matrix)
     print("Precision per-class:", p)
     print("Macro-averged precision", macro_p)
 
-    (r, macro_r) = eval.recall(confusion_matrix)
+    (r, macro_r) = recall(confusion_matrix)
     print("Recall per-class:", r)
     print("Macro-averaged recall:", macro_r)
 
-    (f, f_macro) = eval.f1_score(confusion_matrix)
+    (f, f_macro) = f1_score(confusion_matrix)
     print("F1 score per-class", f)
     print("Macro-averaged F1 score", f_macro)
