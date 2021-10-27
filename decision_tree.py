@@ -78,9 +78,11 @@ def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
             data_val = data_train[j] 
             data_train = np.concatenate(data_train[np.arange(len(data_train))!=i])
             (root, _) = build_decision_tree(data_train)
-            (root_pruned, depth) = prune_tree(root, root, data_val, data_train)
+            #I, David, have added a depth argument to prune_tree
+            (root_pruned, depth) = prune_tree(root, root, data_val, data_train, 0)
             y_gold = data_val[:,-1]
-            y_predict = eval.predict(data_test[:, :-1])
+            #added root_pruned
+            y_predict = eval.predict(root_pruned, data_test[:, :-1])
             acc = eval.accuracy(eval.gen_confusion_matrix(y_gold, y_predict))
             pruned_accuracies.append(acc, root_pruned, depth)
 
