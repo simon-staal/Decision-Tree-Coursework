@@ -53,7 +53,7 @@ def train_test_k_folds(data, rg, k=10, file_suffix="c"):
     assert (k > 1), "Invalid folds parameter"
     data_10fold = split_dataset(data, k, rg) # Split dataset into 10 random equally-sized subsets
     total_confusion = np.zeros((4, 4))
-    depths = np.zeros((k, ))
+    depths = np.zeros((k, )) # Stores depth of each tree generated
 
     # Folder used for figure storing
     out_dir = ("figures")
@@ -81,7 +81,7 @@ def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
     assert (k > 1), "Invalid folds parameter"
     data_10fold = split_dataset(data, k, rg) # Split dataset into 10 random equally-sized subsets
     total_confusion = np.zeros((4, 4))
-    depths = np.zeros((k, ))
+    depths = np.zeros((k, )) # Stores depth of each tree generated
 
     # Folder used for figure storing
     out_dir = ("figures")
@@ -94,19 +94,18 @@ def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
         data_train_outer = data_10fold[np.arange(len(data_10fold))!=i]
         data_test = data_10fold[i]
         # Nested folds for pruning
-        pruned_accuracies = [] # Tracks the accuracy of a particular pruned tree relative to its validation set
+        pruned_accuracies = [] # Tracks the pruned trees created and their accuracy + depth
         for j in range(k-1):
             data_val = data_train_outer[j] 
             data_train = np.concatenate(data_train_outer[np.arange(len(data_train_outer))!=i])
             (root, _) = build_decision_tree(data_train)
             (root_pruned, depth) = prune_tree(root, root, data_val, data_train, 0)
             y_gold = data_val[:,-1]
-            #added root_pruned
             y_predict = eval.predict(root_pruned, data_test[:, :-1])
             acc = eval.accuracy(eval.gen_confusion_matrix(y_gold, y_predict))
             pruned_accuracies.append((acc, root_pruned, depth))
 
-        (_, root, depth) = max(pruned_accuracies, key=lambda x:x[0])
+        (_, root, depth) = max(pruned_accuracies, key=lambda x:x[0]) # Chooses the tree with the highest accuracy
         plot_tree(root, depth, "figures/pruned_fold" + str(i) + "_" + file_suffix + ".png")
         y_gold = data_test[:,-1]
         y_predict = eval.predict(root, data_test[:, :-1])
@@ -119,20 +118,14 @@ def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
 
 #Recursively builds the decision based on the given dataset and the calculated optimal splits.
 def build_decision_tree(data, depth=0):
-    if is_pure(data):
-        return (classify(data), depth)
+    if is_pure(data): # If the data only contains 1 label, return class label
+        return (classify(data), depth) # Classify returns majority class label
 
     else:
-        # split_feature refers to the column of the feature we split our data on, split_val refers to the value at which we seperate out entries on the split_feature
+        # split_feature refers to the column we split our data on
+        # split_val refers to the value at which we seperate out entries on the split_feature
         split_feature, split_val = find_best_split(data)
         l_dataset, r_dataset = split_data(data, split_feature, split_val)
-        if len(l_dataset) == 0 or len(r_dataset) == 0:
-            print("Potential splits:")
-            print(find_splits(data))
-            print("Split feature",split_feature)
-            print("Split value",split_val)
-            print(l_dataset)
-            print(r_dataset)
         l_node, l_depth = build_decision_tree(l_dataset, depth+1)
         r_node, r_depth = build_decision_tree(r_dataset, depth+1)
         node = {
