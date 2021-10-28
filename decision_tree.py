@@ -11,29 +11,35 @@ from helper_functions.pruning import prune_tree
 
 
 def main():
+    # Reads in dataset from specified filepath
     data = read_dataset("wifi_db/clean_dataset.txt")
     seed = 3
     rg = default_rng(seed)
     
+    # Trains on clean dataset, generates confusion matrix and prints relevant performance metrics.
     (total_confusion, avg_depth) = train_test_k_folds(data, rg, 10, "c")
     print("Clean Dataset un-pruned metrics: ")
     eval.print_metrics(total_confusion)
     print("Average un-pruned depth:", avg_depth)
     
+    # Trains on specified dataset, prunes using validation set, generates confusion matrix and prints relevant performance metrics.
     (total_confusion, avg_depth) = train_test_nested_k_folds(data, rg, 10, "c")
     print("Clean Dataset pruned metrics: ")
     eval.print_metrics(total_confusion)
     print("Average pruned depth:", avg_depth)
 
+    # Reads in dataset from specified filepath
     data = read_dataset("wifi_db/noisy_dataset.txt")
     seed = 13
     rg = default_rng(seed)
     
+    # Trains on noisy dataset, generates confusion matrix and prints relevant performance metrics.
     (total_confusion, avg_depth) = train_test_k_folds(data, rg, 10, "n")
     print("Noisy Dataset un-pruned metrics: ")
     eval.print_metrics(total_confusion)
     print("Average un-pruned depth:", avg_depth)
-    
+
+    # Trains on noisy dataset, prunes using validation set, generates confusion matrix and prints relevant performance metrics.    
     (total_confusion, avg_depth) = train_test_nested_k_folds(data, rg, 10, "n")
     print("Noisy Dataset pruned metrics: ")
     eval.print_metrics(total_confusion)
@@ -41,6 +47,7 @@ def main():
 
     return
         
+
 # Returns total confusion matrix for all folds and average tree depth
 def train_test_k_folds(data, rg, k=10, file_suffix="c"):
     assert (k > 1), "Invalid folds parameter"
@@ -68,6 +75,7 @@ def train_test_k_folds(data, rg, k=10, file_suffix="c"):
     
     return (total_confusion, depths.mean())
 
+
 # Returns total confusion matrix for all (outer) folds and average tree depth
 def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
     assert (k > 1), "Invalid folds parameter"
@@ -91,7 +99,6 @@ def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
             data_val = data_train_outer[j] 
             data_train = np.concatenate(data_train_outer[np.arange(len(data_train_outer))!=i])
             (root, _) = build_decision_tree(data_train)
-            #I, David, have added a depth argument to prune_tree
             (root_pruned, depth) = prune_tree(root, root, data_val, data_train, 0)
             y_gold = data_val[:,-1]
             #added root_pruned
@@ -110,16 +117,14 @@ def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
     return (total_confusion, depths.mean())
 
 
+#Recursively builds the decision based on the given dataset and the calculated optimal splits.
 def build_decision_tree(data, depth=0):
-    #print(data.shape)
     if is_pure(data):
         return (classify(data), depth)
 
     else:
-        #potential_splits = find_splits(data)
         # split_feature refers to the column of the feature we split our data on, split_val refers to the value at which we seperate out entries on the split_feature
         split_feature, split_val = find_best_split(data)
-        #, potential_splits)
         l_dataset, r_dataset = split_data(data, split_feature, split_val)
         if len(l_dataset) == 0 or len(r_dataset) == 0:
             print("Potential splits:")

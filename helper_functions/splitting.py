@@ -3,26 +3,23 @@ from helper_functions.entropy import calculate_total_entropy
 
 def find_splits(dataset):
     label_boundaries = {}
-    #print(dataset)
-    #sort dataset by each feature to find class borders in each sorted version
+    #Sorts dataset by each feature to find class borders in each sorted version
     for column in range(dataset.shape[1]-1):
-        data_sorted_for_feature = dataset[:, [column, dataset.shape[1]-1]][dataset[:, column].argsort()]
-        #print(data_sorted_for_feature)
+        sorted_data = dataset[:, [column, dataset.shape[1]-1]][dataset[:, column].argsort()]
 
         #had to add this to fix an issue, problems may arise from features that have an empty vector
         label_boundaries[column] = []
 
-        for row in range(data_sorted_for_feature.shape[0]-1):
+        for row in range(sorted_data.shape[0]-1):
 
-            if data_sorted_for_feature[row, 1] != data_sorted_for_feature[row+1, 1] and data_sorted_for_feature[row, 0] != data_sorted_for_feature[row+1, 0]:
+            if sorted_data[row, 1] != sorted_data[row+1, 1] and sorted_data[row, 0] != sorted_data[row+1, 0]:
 
-                split_value = (data_sorted_for_feature[row, 0] + data_sorted_for_feature[row+1, 0])/2
+                split_value = (sorted_data[row, 0] + sorted_data[row+1, 0])/2
                 label_boundaries[column].append(split_value)        
 
     return label_boundaries
 
 def split_data(dataset, split_feature, split_value):
-    #print(split_value)
     l_dataset = dataset[ dataset[:, split_feature] < split_value ]
     r_dataset = dataset[ dataset[:, split_feature] >= split_value ]
     #ideally, no datapoint should have a feature value equal to the split value, 
@@ -38,6 +35,7 @@ def find_best_split(dataset):
 
     label_boundaries = find_splits(dataset)
     min_remainder = np.inf
+    
     #feature column, feature split value
     optimal_split = [0, 0]
 
