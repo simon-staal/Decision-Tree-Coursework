@@ -3,13 +3,14 @@ import numpy as np
 from numpy.random import default_rng
 
 # Reads in dataset from specified filepath
+# Stores x-data and corresponding label in same numpy array
 def read_dataset(filepath):
     data = []
     for line in open(filepath):
-        if line.strip() != "": # handle empty rows in file
+        if line.strip() != "": # Handle empty rows in file
             row = line.strip().split()
-            assert (len(row) == 8 ), "Bad"
-            entry = list(map(float, row[:]))
+            assert (len(row) == 8 ), f'Expected 8 elements, instead read {len(row)}'
+            entry = list(map(float, row[:])) # Label is represented as float in noisy data, therefore we use float for labels
             data.append(entry)
 
     data = np.array(data)

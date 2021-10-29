@@ -4,7 +4,7 @@ from numpy.random import default_rng
 
 from helper_functions.data_process import read_dataset, split_dataset
 from helper_functions.purity import is_pure, classify
-from helper_functions.splitting import find_splits, find_best_split, split_data
+from helper_functions.splitting import find_best_split, split_data
 from helper_functions.tree_plotting import plot_tree
 import helper_functions.evaluate as eval
 from helper_functions.pruning import prune_tree
@@ -15,17 +15,18 @@ def main():
     data = read_dataset("wifi_db/clean_dataset.txt")
     seed = 3
     rg = default_rng(seed)
-    
+    k = 10
+
     # Trains on clean dataset, generates confusion matrix and prints relevant performance metrics.
-    (total_confusion, avg_depth) = train_test_k_folds(data, rg, 10, "c")
+    (total_confusion, avg_depth) = train_test_k_folds(data, rg, k, "c")
     print("Clean Dataset un-pruned metrics: ")
-    eval.print_metrics(total_confusion)
+    eval.print_metrics(total_confusion, k)
     print("Average un-pruned depth:", avg_depth)
     
     # Trains on specified dataset, prunes using validation set, generates confusion matrix and prints relevant performance metrics.
-    (total_confusion, avg_depth) = train_test_nested_k_folds(data, rg, 10, "c")
+    (total_confusion, avg_depth) = train_test_nested_k_folds(data, rg, k, "c")
     print("Clean Dataset pruned metrics: ")
-    eval.print_metrics(total_confusion)
+    eval.print_metrics(total_confusion, k)
     print("Average pruned depth:", avg_depth)
 
     # Reads in dataset from specified filepath
@@ -34,15 +35,15 @@ def main():
     rg = default_rng(seed)
     
     # Trains on noisy dataset, generates confusion matrix and prints relevant performance metrics.
-    (total_confusion, avg_depth) = train_test_k_folds(data, rg, 10, "n")
+    (total_confusion, avg_depth) = train_test_k_folds(data, rg, k, "n")
     print("Noisy Dataset un-pruned metrics: ")
-    eval.print_metrics(total_confusion)
+    eval.print_metrics(total_confusion, k)
     print("Average un-pruned depth:", avg_depth)
 
     # Trains on noisy dataset, prunes using validation set, generates confusion matrix and prints relevant performance metrics.    
-    (total_confusion, avg_depth) = train_test_nested_k_folds(data, rg, 10, "n")
+    (total_confusion, avg_depth) = train_test_nested_k_folds(data, rg, k, "n")
     print("Noisy Dataset pruned metrics: ")
-    eval.print_metrics(total_confusion)
+    eval.print_metrics(total_confusion, k)
     print("Average pruned depth:", avg_depth)
 
     return
@@ -66,9 +67,9 @@ def train_test_k_folds(data, rg, k=10, file_suffix="c"):
         data_train = np.concatenate(data_10fold[np.arange(len(data_10fold))!=i])
         data_test = data_10fold[i]
         (root, depth) = build_decision_tree(data_train)
-        plot_tree(root, depth, "figures/fold" + str(i) + "_" + file_suffix + ".png")
+        plot_tree(root, depth, "figures/fold" + str(i) + "_" + file_suffix + ".svg")
         y_gold = data_test[:,-1]
-        y_predict = eval.predict(root, data_test[:, :-1])
+        y_predict = eval.predict(root, data_test[:, :-1]) # Remove correct labels from dataset to show we're not cheating
         confusion_matrix = eval.gen_confusion_matrix(y_gold, y_predict)
         total_confusion += confusion_matrix
         depths[i] = depth
@@ -101,12 +102,13 @@ def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
             (root, _) = build_decision_tree(data_train)
             (root_pruned, depth) = prune_tree(root, root, data_val, data_train, 0)
             y_gold = data_val[:,-1]
-            y_predict = eval.predict(root_pruned, data_test[:, :-1])
+            y_predict = eval.predict(root_pruned, data_test[:, :-1]) # Remove correct labels from dataset to show we're not cheating
             acc = eval.accuracy(eval.gen_confusion_matrix(y_gold, y_predict))
             pruned_accuracies.append((acc, root_pruned, depth))
 
         (_, root, depth) = max(pruned_accuracies, key=lambda x:x[0]) # Chooses the tree with the highest accuracy
-        plot_tree(root, depth, "figures/pruned_fold" + str(i) + "_" + file_suffix + ".png")
+
+        plot_tree(root, depth, "figures/pruned_fold" + str(i) + "_" + file_suffix + ".svg")
         y_gold = data_test[:,-1]
         y_predict = eval.predict(root, data_test[:, :-1])
         confusion_matrix = eval.gen_confusion_matrix(y_gold, y_predict)

@@ -1,58 +1,44 @@
 import numpy as np
 from helper_functions.entropy import calculate_total_entropy
 
-def find_splits(dataset):
-    label_boundaries = {}
-    #Sorts dataset by each feature to find class borders in each sorted version
-    for column in range(dataset.shape[1]-1):
-        sorted_data = dataset[:, [column, dataset.shape[1]-1]][dataset[:, column].argsort()]
+# Returns the best split feature and split value for a dataset
+def find_best_split(data):
+    best_split = (None, None, 2) # Keeps track of the best split (split_feature, split value, min_entropy)
+    labels, total_freq = np.unique(data[:,-1], return_counts=True) # Used calculate remaining frequencies
+    total_sum = total_freq.sum()
 
-        #had to add this to fix an issue, problems may arise from features that have an empty vector
-        label_boundaries[column] = []
+    # Sorts dataset by each feature to find class borders in each sorted version
+    for i in range(data.shape[1]-1):
+        running_freq = np.zeros((len(labels),), dtype=int) # Stores running frequencies
+        running_sum = 0
 
-        for row in range(sorted_data.shape[0]-1):
+        sorted_data = data[:, [i, data.shape[1]-1]][data[:, i].argsort()] # Contains 1 feature and label
 
-            if sorted_data[row, 1] != sorted_data[row+1, 1] and sorted_data[row, 0] != sorted_data[row+1, 0]:
+        for j in range(sorted_data.shape[0]-1):
+            # Increments running frequencies
+            running_freq[np.where(labels == sorted_data[j, 1])] += 1 
+            running_sum += 1
 
-                split_value = (sorted_data[row, 0] + sorted_data[row+1, 0])/2
-                label_boundaries[column].append(split_value)        
+            # Check if feature values are different
+            # If feature values are the same we can't split between these two values
+            if sorted_data[j, 0] != sorted_data[j+1, 0]:
+                # The reason we pass the sum is to avoid the O(n) cost of computing it, we can track the running sum with O(1)
+                current_entropy = calculate_total_entropy(running_freq, total_freq-running_freq, running_sum, total_sum-running_sum)
+                # If the current entropy is < the current minimum entropy, we maximise information gain
+                # Therefor there is no need to compute the information gain
+                if current_entropy < best_split[2]:
+                    split_value = (sorted_data[j, 0] + sorted_data[j+1, 0])/2
+                    best_split = (i, split_value, current_entropy)     
 
-    return label_boundaries
+    assert (best_split[0] != None), "No split found"
 
+    return (best_split[0], best_split[1])
+
+# Returns 2 data sets that have been split on a specified feature and value
 def split_data(dataset, split_feature, split_value):
+    # We should never have values in the dataset = split_value because we only consider splits where the adjecent values are different
     l_dataset = dataset[ dataset[:, split_feature] < split_value ]
-    r_dataset = dataset[ dataset[:, split_feature] >= split_value ]
-    #ideally, no datapoint should have a feature value equal to the split value, 
-    #bar in the edge cases where a small number of datapoints of different classes have the same values 
-    #or the optimal split is done on a feature where the border points have the same value
-    #in the former, split arbitrarily below, in the latter, ignore until the classes are separated by another feature or the latter case emerges
-    if r_dataset.size == 0:
-        l_dataset, r_dataset = np.array_split(l_dataset, 2)
+    r_dataset = dataset[ dataset[:, split_feature] > split_value ]
+
 
     return l_dataset, r_dataset
-
-def find_best_split(dataset):
-
-    label_boundaries = find_splits(dataset)
-    min_remainder = np.inf
-    
-    #feature column, feature split value
-    optimal_split = [0, 0]
-
-    #might be "simpler" to replace dict by list of tuples, bigger data structure but it seems odd to use a dictionary if only items are used
-    for potential_split in label_boundaries.items():
-        #print(type(potential_split))
-        #would be nice to avoid this, not clear if this is the fix tbh tho
-        if( potential_split[1] != []):
-            for i, boundary in enumerate(potential_split[1]):
-                #print(np.asarray(potential_split[1]).shape)
-                #print(str(i) +": " + str(boundary))
-                l_dataset, r_dataset = split_data(dataset, potential_split[0], boundary)
-                entropy_remainder = calculate_total_entropy(l_dataset, r_dataset)
-                if entropy_remainder < min_remainder:
-                    min_remainder = entropy_remainder
-                    #print(potential_split)
-                    #optimal_split = potential_split
-                    optimal_split[0] = potential_split[0]
-                    optimal_split[1] = boundary
-    return optimal_split[0], optimal_split[1]

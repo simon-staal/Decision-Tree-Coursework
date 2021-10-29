@@ -2,9 +2,10 @@ import numpy as np
 
 # Predicts label for single entry
 def predict_single(attributes, root):
-    if isinstance(root, str) or isinstance(root,int) or isinstance(root, float):
+    # Labels are stored as floats => leaf node
+    if isinstance(root, float):
         return root
-    else:
+    else: # We are not at a leaf node
         if attributes[int(root["attribute"])] < root["value"]:
             return predict_single(attributes, root['left'])
         else:
@@ -16,11 +17,14 @@ def predict(root, data_test):
 
 # Return confusion matrix based on gold standard vs predictions
 def gen_confusion_matrix(y_gold, y_predict):
+    # y_gold and y_predict contain the labels stored as floats
+    # In this case => {1. 2. 3. 4.}
     class_labels = np.unique(np.concatenate((y_gold, y_predict)))
     confusion_matrix = np.zeros((len(class_labels), len(class_labels)), dtype=np.int)
 
     assert (len(y_gold) == len(y_predict)),"Mismatched prediction / gold standard results"
     for i in range(len(y_gold)):
+        # We map the floats to indices in our confusion matrix by converting to int and subtracting 1
         confusion_matrix[int(y_gold[i])-1][int(y_predict[i])-1] += 1
     
     return confusion_matrix
@@ -81,9 +85,10 @@ def f1_score(confusion_matrix):
     
     return (f, macro_f)
 
-# Prints all the metrics we are interested in for a given confusion matrix
-def print_metrics(confusion_matrix):
-    print(confusion_matrix)
+# Prints all the relevant metrics for a given confusion matrix + number of folds
+def print_metrics(confusion_matrix, k):
+    print("Average confusion matrix:")
+    print(confusion_matrix/k)
 
     print("Accuracy:", accuracy(confusion_matrix))
 
