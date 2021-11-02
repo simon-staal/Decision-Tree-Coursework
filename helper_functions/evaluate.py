@@ -13,16 +13,17 @@ def predict_single(attributes, root):
 
 # Predicts labels for data-set
 def predict(root, data_test):
-    #print("????", data_test)
     return np.apply_along_axis(predict_single, 1, data_test, root=root)
 
 # Return confusion matrix based on gold standard vs predictions
 def gen_confusion_matrix(y_gold, y_predict):
     # y_gold and y_predict contain the labels stored as floats
     # In this case => {1. 2. 3. 4.}
+
+    # !!! Cutting validation data in pruning requires class_labels to be a constant, might want to make it defined outside the fn
     #class_labels = np.unique(np.concatenate((y_gold, y_predict)))
     class_labels = [1.0, 2.0, 3.0, 4.0]
-    #print("ttrtrt",class_labels)
+
     confusion_matrix = np.zeros((len(class_labels), len(class_labels)), dtype=np.int)
 
     assert (len(y_gold) == len(y_predict)),"Mismatched prediction / gold standard results"
