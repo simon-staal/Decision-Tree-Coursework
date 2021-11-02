@@ -9,6 +9,7 @@ from helper_functions.tree_plotting import plot_tree
 import helper_functions.evaluate as eval
 from helper_functions.pruning import prune_tree
 
+import time
 
 def main():
     # Reads in dataset from specified filepath
@@ -100,7 +101,10 @@ def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
             data_val = data_train_outer[j] 
             data_train = np.concatenate(data_train_outer[np.arange(len(data_train_outer))!=i])
             (root, _) = build_decision_tree(data_train)
+            start = time.time()
             (root_pruned, depth) = prune_tree(root, root, data_val, data_train, 0)
+            end = time.time()
+            #print("pruning time in main:",end - start)
             y_gold = data_val[:,-1]
             y_predict = eval.predict(root_pruned, data_test[:, :-1]) # Remove correct labels from dataset to show we're not cheating
             acc = eval.accuracy(eval.gen_confusion_matrix(y_gold, y_predict))
