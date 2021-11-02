@@ -104,7 +104,7 @@ def train_test_nested_k_folds(data, rg, k=10, file_suffix="c"):
             start = time.time()
             (root_pruned, depth) = prune_tree(root, root, data_val, data_train, 0)
             end = time.time()
-            #print("pruning time in main:",end - start)
+            print("pruning time in main:",end - start)
             y_gold = data_val[:,-1]
             y_predict = eval.predict(root_pruned, data_test[:, :-1]) # Remove correct labels from dataset to show we're not cheating
             acc = eval.accuracy(eval.gen_confusion_matrix(y_gold, y_predict))

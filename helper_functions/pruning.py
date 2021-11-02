@@ -11,9 +11,7 @@ def prune_tree(root, current_node, data_val, data_train, depth):
     assert( data_val.size != 0 ), "We shouldn't recurse to a node that has no validation examples"
 
     y_gold = data_val[:, -1] # Extract correct labels for validation data
-    #print("!!!!!", data_train)
-    #print("$$$$$", data_val)
-    print("in:", data_train.shape, data_val.shape)
+
     y_predict = predict(current_node, data_val[:, :-1]) # Remove correct labels from dataset to show we're not cheating
     ref_accuracy = accuracy(gen_confusion_matrix(y_gold, y_predict))
 
@@ -25,25 +23,17 @@ def prune_tree(root, current_node, data_val, data_train, depth):
 
     data_val_l, data_val_r = split_data(data_val, current_node["attribute"], current_node["value"])
 
-    if is_pure(data_val):
-        print("validation data is pure, this shouldn't happen")
-
     # Prune any nodes which would split their validation input into empty and non empty sets
     # This shouldn't interfere with the main accuracy-based pruning, which would remove these nodes eventually
     if( not isinstance(current_node["left"], Number) ):
         data_val_l_l, data_val_l_r = split_data(data_val_l, current_node["left"]["attribute"], current_node["left"]["value"])
         if data_val_l_l.size == 0 or data_val_l_r.size == 0:
-            print("pseudo purity detected left")
             current_node["left"] = maj_class_l
 
     if( not isinstance(current_node["right"], Number) ):
         data_val_r_l, data_val_r_r = split_data(data_val_r, current_node["right"]["attribute"], current_node["right"]["value"])
         if data_val_r_l.size == 0 or data_val_r_r.size == 0:
-            print("pseudo purity detected right")
             current_node["right"] = maj_class_r
-
-
-    print("out:", data_train_l.shape, data_train_r.shape, data_val_l.shape, data_val_r.shape )
 
     left_depth = 0
     right_depth = 0
