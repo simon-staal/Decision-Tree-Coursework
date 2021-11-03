@@ -29,6 +29,10 @@ def main():
     eval.print_metrics(total_confusion, k)
     print("Average pruned depth:", avg_depth)
 
+    # Trains the tree on the entire clean dataset and plots this tree
+    (root, depth) = build_decision_tree(data)
+    plot_tree(root, depth, "figures/entire_cleandata" + ".png")
+
     # Reads in dataset from specified filepath
     data = read_dataset("wifi_db/noisy_dataset.txt")
     seed = 13
