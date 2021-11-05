@@ -6,7 +6,7 @@ from helper_functions.evaluate import predict, accuracy, gen_confusion_matrix
 
 # Returns root and depth of a pruned tree based on an existing tree+depth and validation dataset
 # data_val and data_train are the portions of the datasets that enter the given node during prediction
-def prune_tree(root, current_node, data_val, data_train, depth):
+def prune_tree(root, current_node, data_val, data_train, depth=0):
 
     assert( data_val.size != 0 ), "We shouldn't recurse to a node that has no validation examples"
 

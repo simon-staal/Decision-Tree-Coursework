@@ -11,7 +11,7 @@ Contributors
 
 Overview
 --------
-Our decision tree can be run to generate pruned and un-pruned decision trees on both the clean and noisy data by calling `python3 decision_tree.py` (Note this implementation was built using python 3.8.10). The visualised decision trees can be found after execution in the [**figures**](figures/) directory.
+Our decision tree can be run to generate pruned and un-pruned decision trees on both the clean and noisy data by calling `python3 decision_tree.py` (Note this implementation was built using python 3.8.10). The visualised decision trees can be found after execution in the [**figures**](figures/) directory. The report for the project can be found [**here**](report/report.pdf).
 
 [**helper_functions**](helper_functions/)
 -----
