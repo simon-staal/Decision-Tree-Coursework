@@ -20,14 +20,13 @@ def gen_confusion_matrix(y_gold, y_predict):
     # y_gold and y_predict contain the labels stored as floats
     # In this case => {1. 2. 3. 4.}
 
-    # !!! Cutting validation data in pruning requires class_labels to be a constant, might want to make it defined outside the fn
+    #Originally generated class labels from data, however its possible for some labels to be absent in any given random split of the data
     #class_labels = np.unique(np.concatenate((y_gold, y_predict)))
     class_labels = [1.0, 2.0, 3.0, 4.0]
 
     confusion_matrix = np.zeros((len(class_labels), len(class_labels)), dtype=np.int)
 
     assert (len(y_gold) == len(y_predict)),"Mismatched prediction / gold standard results"
-    #print("fnkgskfjdb", len(y_gold))
     for i in range(len(y_gold)):
         # We map the floats to indices in our confusion matrix by converting to int and subtracting 1
         confusion_matrix[int(y_gold[i])-1][int(y_predict[i])-1] += 1
