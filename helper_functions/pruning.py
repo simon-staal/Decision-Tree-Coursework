@@ -45,13 +45,16 @@ def prune_tree(root, current_node, data_val, data_train, depth=0):
         # Check the children of the left child are not leaves, if they are leaves don't recurse
         if( not (isinstance(current_node["left"]["left"], Number) and isinstance(current_node["left"]["right"], Number) ) ):
             root, left_depth = prune_tree(root, current_node["left"], data_val_l, data_train_l, depth+1 )
-                
+        else:
+            left_depth = depth + 1
 
     # Same logic applies to right
     if( not isinstance(current_node["right"], Number) ):
         if( not (isinstance(current_node["right"]["left"], Number) and isinstance(current_node["right"]["right"], Number) ) ):
             root, right_depth = prune_tree(root, current_node["right"], data_val_r, data_train_r, depth+1 )
-
+        else:
+            right_depth = depth + 1
+            
     max_depth = max(left_depth, right_depth, depth)
 
     # Try to prune if a child node only has leaves
