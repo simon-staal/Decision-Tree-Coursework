@@ -23,8 +23,10 @@ def prune_tree(root, current_node, data_val, data_train, depth):
 
     data_val_l, data_val_r = split_data(data_val, current_node["attribute"], current_node["value"])
 
-    # Prune any nodes which would split their validation input into empty and non empty sets
-    # This shouldn't interfere with the main accuracy-based pruning, which would remove these nodes eventually
+    # Prune any nodes which would split their validation input into empty and non empty sets, since it is impossible to evaluate a node receving an empty set
+    # Nodes higher up the tree have more influence than those below, and nodes with a split value not included in their validation set have very poor performance. 
+    # Therefore it is beneficial to prune these nodes along with their children, even if the latter have good performance. 
+    # We have indeed found experimentally that pruning these nodes increases performance.
     if( not isinstance(current_node["left"], Number) ):
         data_val_l_l, data_val_l_r = split_data(data_val_l, current_node["left"]["attribute"], current_node["left"]["value"])
         if data_val_l_l.size == 0 or data_val_l_r.size == 0:
