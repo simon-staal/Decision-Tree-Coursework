@@ -1,4 +1,5 @@
 import matplotlib 
+matplotlib.use('Agg') # Set the backend to Agg, this is to make sure the code works with the lab machines
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -45,7 +46,6 @@ def plot_tree_helper(root, depth=0, x=0, y=50, yspacing=5):
 # Initialises the matplotlib figure, calls the recursive function then closes the figure and saves the file
 # Parameters: root of the tree, the maximal depth the tree could achieve, and the filename the figure must be saved as
 def plot_tree(root, maxdepth, filename) :
-    matplotlib.use('Agg') # Set the backend to Agg, this is to make sure the code works with the lab machines
     plt.figure(figsize=(min(2**maxdepth, 2**5), maxdepth), dpi=80) # Figure size cannot be too big so we cap it at 2^7
     plot_tree_helper(root) # Call the recursive function
     plt.axis('off') # Remove the axes
